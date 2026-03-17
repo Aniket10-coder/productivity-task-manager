@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Task Manager</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f2f2f2;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:20px;
+border-radius:10px;
+width:400px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:5px 0;
+}
+
+button{
+padding:10px;
+background:#007bff;
+color:white;
+border:none;
+width:100%;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+li{
+background:#eee;
+padding:10px;
+margin-top:10px;
+border-radius:5px;
+}
+
+.completed{
+text-decoration:line-through;
+color:gray;
+}
+
+.task-buttons{
+margin-top:5px;
+}
+
+.task-buttons button{
+width:auto;
+margin-right:5px;
+padding:5px 8px;
+}
+
+.progress{
+background:#ddd;
+height:10px;
+border-radius:5px;
+margin-bottom:10px;
+}
+
+.bar{
+height:10px;
+background:green;
+width:0%;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Task Manager</h2>
+
+<div class="progress">
+<div id="bar" class="bar"></div>
+</div>
+
+<input id="task" placeholder="Enter task">
+
+<select id="category">
+<option>Study</option>
+<option>Work</option>
+<option>Personal</option>
+</select>
+
+<input id="deadline" type="date">
+
+<button onclick="addTask()">Add Task</button>
+
+<ul id="list"></ul>
+
+</div>
+
+<script>
+
+let tasks=[];
+
+function addTask(){
+
+let text=document.getElementById("task").value;
+
+let category=document.getElementById("category").value;
+
+let deadline=document.getElementById("deadline").value;
+
+if(text==""){
+alert("Enter task");
+return;
+}
+
+tasks.push({
+text:text,
+category:category,
+deadline:deadline,
+done:false
+});
+
+document.getElementById("task").value="";
+
+showTasks();
+
+}
+
+function showTasks(){
+
+let list=document.getElementById("list");
+
+list.innerHTML="";
+
+let completed=0;
+
+tasks.forEach((t,i)=>{
+
+if(t.done) completed++;
+
+let li=document.createElement("li");
+
+li.innerHTML=`
+<span class="${t.done?'completed':''}" onclick="toggle(${i})">${t.text}</span>
+<br>
+<small>${t.category} | ${t.deadline}</small>
+<div class="task-buttons">
+<button onclick="editTask(${i})">Edit</button>
+<button onclick="deleteTask(${i})">Delete</button>
+</div>
+`;
+
+list.appendChild(li);
+
+});
+
+let percent=tasks.length?completed/tasks.length*100:0;
+
+document.getElementById("bar").style.width=percent+"%";
+
+}
+
+function toggle(i){
+
+tasks[i].done=!tasks[i].done;
+
+showTasks();
+
+}
+
+function deleteTask(i){
+
+tasks.splice(i,1);
+
+showTasks();
+
+}
+
+function editTask(i){
+
+let newTask=prompt("Edit task",tasks[i].text);
+
+if(newTask){
+
+tasks[i].text=newTask;
+
+showTasks();
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
